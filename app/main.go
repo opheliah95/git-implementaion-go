@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Blob struct {
@@ -15,12 +17,13 @@ type Blob struct {
 
 func newBlob(data string) *Blob {
 	sum := sha1.Sum([]byte(data))
-	blob := Blob{content: data, hash: sum}
-	return &blob
+	blob := &Blob{content: data, hash: sum}
+	return blob
 }
 
 // Usage: your_program.sh <command> <arg1> <arg2> ...
 func main() {
+	objects := make(map[string]string)
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintf(os.Stderr, "Logs from your program will appear here!\n")
 
@@ -34,7 +37,7 @@ func main() {
 		cmd := os.Args[2]
 		flag := os.Args[3]
 		param := os.Args[4]
-		//fmt.Println("cmd=", cmd, "flag=", flag, "param=", param)
+		fmt.Println("cmd=", cmd, "flag=", flag, "param=", param)
 
 		if cmd == "hash-object" && flag == "-w" {
 
@@ -47,9 +50,61 @@ func main() {
 			blob := newBlob(content)
 
 			hx := hex.EncodeToString(blob.hash[:])
+			hx = strings.TrimSpace(hx)
+			objects[hx] = content
+
+			// store data to blob object
+			blob_folder := ".git/objects"
+			sub_folder := hx[:2]
+			file_name := hx[2:]
+
+			path := filepath.Join(blob_folder, sub_folder, file_name)
+			dir := filepath.Dir(path)
+
+			if err = os.MkdirAll(dir, 0755); err != nil {
+				panic(err)
+			}
+
+			file, err := os.Create(path)
+
+			if err != nil {
+				panic(err)
+			}
+			defer file.Close()
+
+			// write content to file
+			_, err = file.Write(b)
+			if err != nil {
+				panic(err)
+			}
 			fmt.Println(hx)
 		}
 
+	case "cat-file":
+		flag := os.Args[2]
+		hash := strings.TrimSpace(os.Args[3])
+		fmt.Println("hash=", hash)
+
+		if flag == "-p" {
+			// fetch from folder
+				blob_folder := ".git/objects"
+				sub_folder := hash[:2]
+				file_name := hash[2:]
+				file_slice := []string{blob_folder, sub_folder, file_name}
+				full_path := strings.Join(file_slice, "/")
+
+				if _, err := os.Stat(full_path); err != nil {
+					panic(err)
+				} else {
+					if data, err := os.ReadFile(full_path); err != nil {
+						panic(err)
+					} else {
+						fmt.Print(string(data))
+
+					}
+
+				}
+		}
 	case "init":
 		//TODO: Uncomment the code below to pass the first stage!
 
