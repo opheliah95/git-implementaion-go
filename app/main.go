@@ -83,7 +83,7 @@ func main() {
 	case "cat-file":
 		flag := os.Args[2]
 		hash := strings.TrimSpace(os.Args[3])
-		fmt.Println("hash=", hash)
+		//fmt.Println("hash=", hash)
 
 		if flag == "-p" {
 			// fetch from folder
