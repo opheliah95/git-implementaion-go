@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"compress/zlib"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -89,23 +92,32 @@ func main() {
 
 		if flag == "-p" {
 			// fetch from folder
-				blob_folder := ".git/objects"
-				sub_folder := hash[:2]
-				file_name := hash[2:]
-				file_slice := []string{blob_folder, sub_folder, file_name}
-				full_path := strings.Join(file_slice, "/")
+			blob_folder := ".git/objects"
+			sub_folder := hash[:2]
+			file_name := hash[2:]
+			file_slice := []string{blob_folder, sub_folder, file_name}
+			full_path := strings.Join(file_slice, "/")
 
-				if _, err := os.Stat(full_path); err != nil {
+			if _, err := os.Stat(full_path); err != nil {
+				panic(err)
+			} else {
+				if data, err := os.ReadFile(full_path); err != nil {
 					panic(err)
 				} else {
-					if data, err := os.ReadFile(full_path); err != nil {
-						panic(err)
-					} else {
-						fmt.Print(string(data))
 
+					//zlib decompress
+					b := bytes.NewReader(data)
+
+					r, err := zlib.NewReader(b)
+					if err != nil {
+						panic(err)
 					}
+					io.Copy(os.Stdout, r)
+					r.Close() // close zlib readerr
 
 				}
+
+			}
 		}
 	case "init":
 		//TODO: Uncomment the code below to pass the first stage!
