@@ -133,11 +133,11 @@ func main() {
 						panic(err)
 					} else {
 						res := string(p)
-						res_digit_str := fmt.Sprintf("%d", len(res))
-						res_len := len(res_digit_str)
-						sub_idx := find_index(res, "blob")
+						//res_digit_str := fmt.Sprintf("%d", len(res))
+						//res_len := len(res_digit_str)
+						sub_idx := find_index(res, "\x00")
 						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", res_len)
-						fmt.Println(res[sub_idx+4+res_len+1:])
+						fmt.Println(res[sub_idx:])
 					}
 
 				}
