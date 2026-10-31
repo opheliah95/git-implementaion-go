@@ -6,7 +6,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,6 +21,17 @@ func newBlob(data string) *Blob {
 	sum := sha1.Sum([]byte(data))
 	blob := &Blob{content: data, hash: sum}
 	return blob
+}
+
+func find_index(input string, sub string) int {
+	//fmt.Println("the string is: ", input, " the sub=", sub)
+	n := strings.Index(input, sub)
+	if n == -1 {
+		return -1
+	}
+
+	r := []rune(input[:n]) // start to end
+	return len(r)
 }
 
 // Usage: your_program.sh <command> <arg1> <arg2> ...
@@ -112,8 +122,15 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					io.Copy(os.Stdout, r)
-					r.Close() // close zlib readerr
+
+					zlib_data := make([]byte, 0, 1024)
+
+					defer r.Close() // close zlib readerr
+
+					r.Read(zlib_data)
+					res := string(zlib_data)
+					sub_idx := find_index(res, "0x00")
+					fmt.Println(res[sub_idx:])
 
 				}
 
