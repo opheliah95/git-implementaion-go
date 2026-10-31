@@ -58,7 +58,7 @@ func main() {
 			blob_folder := ".git/objects"
 			sub_folder := hx[:2]
 			file_name := hx[2:]
-			zlib_format := fmt.Sprintf("blob %d\\0%s", bytes, content)
+			zlib_format := fmt.Sprintf("blob %d0x00%s", bytes, content)
 
 			path := filepath.Join(blob_folder, sub_folder, file_name)
 			dir := filepath.Dir(path)
