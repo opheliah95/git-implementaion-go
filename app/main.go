@@ -6,7 +6,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,7 +24,7 @@ func newBlob(data string) *Blob {
 }
 
 func find_index(input string, sub string) int {
-	fmt.Println("the string is: ", input, " the sub=", sub)
+	//fmt.Println("the string is: ", input, " the sub=", sub)
 	n := strings.Index(input, sub)
 	if n == -1 {
 		return -1
@@ -124,17 +123,19 @@ func main() {
 						panic(err)
 					}
 
-					io.Copy(os.Stdout, r)
+					buf := new(bytes.Buffer)
+					buf.ReadFrom(r)
+					p := buf.String()
 					defer r.Close() // close zlib readerr
 
-					// p, err := io.ReadAll(r)
-					// if err != nil {
-					// 	panic(err)
-					// } else {
-					// 	res := string(p)
-					// 	sub_idx := find_index(res, "0x00")
-					// 	fmt.Println(res[sub_idx+1:])
-					// }
+					//p, err := io.ReadAll(r)
+					if err != nil {
+						panic(err)
+					} else {
+						res := string(p)
+						sub_idx := find_index(res, "0x00")
+						fmt.Println(res[sub_idx+1:])
+					}
 
 				}
 
