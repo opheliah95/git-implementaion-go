@@ -24,7 +24,7 @@ func newBlob(data string) *Blob {
 }
 
 func find_index(input string, sub string) int {
-	//fmt.Println("the string is: ", input, " the sub=", sub)
+	fmt.Println("the string is: ", input, " the sub=", sub)
 	n := strings.Index(input, sub)
 	if n == -1 {
 		return -1
@@ -129,8 +129,8 @@ func main() {
 
 					r.Read(zlib_data)
 					res := string(zlib_data)
-					sub_idx := find_index(res, "0x00")
-					fmt.Println(res[sub_idx:])
+					sub_idx := find_index(res, "blob")
+					fmt.Println(res[sub_idx+1:])
 
 				}
 
