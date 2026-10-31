@@ -46,6 +46,7 @@ func main() {
 				panic(err)
 			}
 			content := string(b)
+			bytes := len(content)
 
 			blob := newBlob(content)
 
@@ -57,6 +58,7 @@ func main() {
 			blob_folder := ".git/objects"
 			sub_folder := hx[:2]
 			file_name := hx[2:]
+			zlib_format := fmt.Sprintf("blob %d\\0%s", bytes, content)
 
 			path := filepath.Join(blob_folder, sub_folder, file_name)
 			dir := filepath.Dir(path)
@@ -73,7 +75,7 @@ func main() {
 			defer file.Close()
 
 			// write content to file
-			_, err = file.Write(b)
+			_, err = file.Write([]byte(zlib_format))
 			if err != nil {
 				panic(err)
 			}
