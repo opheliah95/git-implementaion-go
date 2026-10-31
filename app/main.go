@@ -24,7 +24,7 @@ func newBlob(data string) *Blob {
 }
 
 func find_index(input string, sub string) int {
-	//fmt.Println("the string is: ", input, " the sub=", sub)
+	//fmt.Println("the string is:", input, " the sub=", sub)
 	n := strings.Index(input, sub)
 	if n == -1 {
 		return -1
@@ -133,8 +133,11 @@ func main() {
 						panic(err)
 					} else {
 						res := string(p)
-						sub_idx := find_index(res, "0x00")
-						fmt.Println(res[sub_idx+1:])
+						res_digit_str := fmt.Sprintf("%d", len(res))
+						res_len := len(res_digit_str)
+						sub_idx := find_index(res, "blob")
+						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", res_len)
+						fmt.Println(res[sub_idx+4+res_len+1:])
 					}
 
 				}
