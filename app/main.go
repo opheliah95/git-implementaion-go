@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -123,14 +124,17 @@ func main() {
 						panic(err)
 					}
 
-					zlib_data := make([]byte, 0, 1024)
-
+					io.Copy(os.Stdout, r)
 					defer r.Close() // close zlib readerr
 
-					r.Read(zlib_data)
-					res := string(zlib_data)
-					sub_idx := find_index(res, "blob")
-					fmt.Println(res[sub_idx+1:])
+					// p, err := io.ReadAll(r)
+					// if err != nil {
+					// 	panic(err)
+					// } else {
+					// 	res := string(p)
+					// 	sub_idx := find_index(res, "0x00")
+					// 	fmt.Println(res[sub_idx+1:])
+					// }
 
 				}
 
