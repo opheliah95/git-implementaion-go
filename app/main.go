@@ -50,7 +50,7 @@ func main() {
 		cmd := os.Args[2]
 		flag := os.Args[3]
 		param := os.Args[4]
-		fmt.Println("cmd=", cmd, "flag=", flag, "param=", param)
+		//fmt.Println("cmd=", cmd, "flag=", flag, "param=", param)
 
 		if cmd == "hash-object" && flag == "-w" {
 
@@ -59,7 +59,7 @@ func main() {
 				panic(err)
 			}
 			content := string(b)
-			bytes := len(content)
+			content_len := len(content)
 
 			blob := newBlob(content)
 
@@ -71,7 +71,14 @@ func main() {
 			blob_folder := ".git/objects"
 			sub_folder := hx[:2]
 			file_name := hx[2:]
-			zlib_format := fmt.Sprintf("blob %d0x00%s", bytes, content)
+			zlib_format := fmt.Sprintf("blob %d\x00%s", content_len, content)
+			fmt.Println("zlib=", zlib_format)
+
+			// convert to zlib
+			var z_buffer bytes.Buffer
+			w := zlib.NewWriter(&z_buffer)
+			w.Write([]byte(zlib_format))
+			w.Close()
 
 			path := filepath.Join(blob_folder, sub_folder, file_name)
 			dir := filepath.Dir(path)
@@ -88,10 +95,10 @@ func main() {
 			defer file.Close()
 
 			// write content to file
-			_, err = file.Write([]byte(zlib_format))
-			if err != nil {
+			if _, err := z_buffer.WriteTo(file); err != nil {
 				panic(err)
 			}
+
 			fmt.Println(hx)
 		}
 
@@ -136,7 +143,7 @@ func main() {
 						//res_digit_str := fmt.Sprintf("%d", len(res))
 						null_byte_len := len("\x00")
 						sub_idx := find_index(res, "\x00")
-						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", res_len)
+						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", null_byte_len)
 						fmt.Print(res[sub_idx+null_byte_len:])
 					}
 
