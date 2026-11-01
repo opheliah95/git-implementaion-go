@@ -134,8 +134,8 @@ func main() {
 					} else {
 						res := string(p)
 						//res_digit_str := fmt.Sprintf("%d", len(res))
-						null_byte_len := len("0x00")
-						sub_idx := find_index(res, "0x00")
+						null_byte_len := len("\x00")
+						sub_idx := find_index(res, "\x00")
 						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", res_len)
 						fmt.Println(res[sub_idx+null_byte_len:])
 					}
