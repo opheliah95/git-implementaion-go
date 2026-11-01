@@ -61,17 +61,19 @@ func main() {
 			content := string(b)
 			content_len := len(content)
 
-			blob := newBlob(content)
+			// store data to blob object
+			blob_folder := ".git/objects"
+			zlib_format := fmt.Sprintf("blob %d\x00%s", content_len, content)
+
+			// computing blob and sha
+			blob := newBlob(zlib_format)
 
 			hx := hex.EncodeToString(blob.hash[:])
 			hx = strings.TrimSpace(hx)
 			objects[hx] = content
 
-			// store data to blob object
-			blob_folder := ".git/objects"
 			sub_folder := hx[:2]
 			file_name := hx[2:]
-			zlib_format := fmt.Sprintf("blob %d\x00%s", content_len, content)
 			//fmt.Println("zlib=", zlib_format)
 
 			// convert to zlib
