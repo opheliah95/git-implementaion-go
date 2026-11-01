@@ -46,13 +46,13 @@ func main() {
 	}
 
 	switch command := os.Args[1]; command {
-	case "mygit":
-		cmd := os.Args[2]
-		flag := os.Args[3]
-		param := os.Args[4]
+	case "hash-object":
+
+		flag := os.Args[2]
+		param := os.Args[3]
 		//fmt.Println("cmd=", cmd, "flag=", flag, "param=", param)
 
-		if cmd == "hash-object" && flag == "-w" {
+		if flag == "-w" {
 
 			b, err := os.ReadFile(param)
 			if err != nil {
@@ -72,7 +72,7 @@ func main() {
 			sub_folder := hx[:2]
 			file_name := hx[2:]
 			zlib_format := fmt.Sprintf("blob %d\x00%s", content_len, content)
-			fmt.Println("zlib=", zlib_format)
+			//fmt.Println("zlib=", zlib_format)
 
 			// convert to zlib
 			var z_buffer bytes.Buffer
