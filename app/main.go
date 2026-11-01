@@ -137,7 +137,7 @@ func main() {
 						null_byte_len := len("\x00")
 						sub_idx := find_index(res, "\x00")
 						//fmt.Println("the sub index is ", sub_idx, "len of res is: ", res_len)
-						fmt.Println(res[sub_idx+null_byte_len:])
+						fmt.Print(res[sub_idx+null_byte_len:])
 					}
 
 				}
